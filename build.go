@@ -14,28 +14,20 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
-	"regexp"
 	"strconv"
 	"strings"
 	"time"
 )
 
 var (
-	versionRe = regexp.MustCompile(`-[0-9]{1,3}-g[0-9a-f]{5,10}`)
-	goarch    string
-	goos      string
-	gocc      string
-	gocxx     string
-	cgo       string
-	pkgArch   string
-	version   string = "v1"
+	version string = "v1"
 	// deb & rpm does not support semver so have to handle their version a little differently
 	linuxPackageVersion   string = "v1"
 	linuxPackageIteration string = ""
 	race                  bool
-	phjsToRelease         string
-	workingDir            string
-	binaries              []string = []string{"alertmanager"}
+
+	workingDir string
+	binaries   []string = []string{"alertmanager"}
 )
 
 const minGoVersion = 1.7
@@ -95,7 +87,7 @@ func makeLatestDistCopies() {
 }
 
 func findVersion() {
-	var files = []string{"VERSION", "version/VERSION"}
+	var files = []string{"VERSION"}
 	for _, file := range files {
 		if fileExists(file) {
 			version = readFile(file)
@@ -179,7 +171,7 @@ func createPackage(options linuxPackageOptions) {
 
 	// copy binary
 	for _, binary := range binaries {
-		runPrint("cp", "-p", filepath.Join(workingDir, "bin/"+binary), filepath.Join(packageRoot, "/usr/sbin/"+binary))
+		runPrint("cp", "-p", filepath.Join(workingDir, ".build/linux-amd64/"+binary), filepath.Join(packageRoot, "/usr/sbin/"+binary))
 	}
 	// copy init.d script
 	runPrint("cp", "-p", options.initdScriptSrc, filepath.Join(packageRoot, options.initdScriptFilePath))
@@ -210,14 +202,6 @@ func createPackage(options linuxPackageOptions) {
 		"-p", "./dist",
 	}
 
-	if pkgArch != "" {
-		args = append(args, "-a", pkgArch)
-	}
-
-	if linuxPackageIteration != "" {
-		args = append(args, "--iteration", linuxPackageIteration)
-	}
-
 	// add dependenciesj
 	for _, dep := range options.depends {
 		args = append(args, "--depends", dep)
@@ -241,41 +225,6 @@ func ensureGoPath() {
 	}
 }
 
-func test(pkg string) {
-	setBuildEnv()
-	runPrint("go", "test", "-short", "-timeout", "60s", pkg)
-}
-
-func build(binaryName, pkg string, tags []string) {
-	binary := "./bin/" + binaryName
-	if goos == "windows" {
-		binary += ".exe"
-	}
-
-	rmr(binary, binary+".md5")
-	args := []string{"build", "-ldflags", ldflags()}
-	if len(tags) > 0 {
-		args = append(args, "-tags", strings.Join(tags, ","))
-	}
-	if race {
-		args = append(args, "-race")
-	}
-
-	args = append(args, "-o", binary)
-	args = append(args, pkg)
-	setBuildEnv()
-
-	runPrint("go", "version")
-	runPrint("go", args...)
-
-	// Create an md5 checksum of the binary, to be included in the archive for
-	// automatic upgrades.
-	err := md5File(binary)
-	if err != nil {
-		log.Fatal(err)
-	}
-}
-
 func rmr(paths ...string) {
 	for _, path := range paths {
 		log.Println("rm -r", path)
@@ -289,53 +238,10 @@ func mkdir(paths ...string) {
 		os.Mkdir(path, 0777)
 	}
 }
-func ldflags() string {
-	var b bytes.Buffer
-	b.WriteString("-w")
-	b.WriteString(fmt.Sprintf(" -X main.version=%s", version))
-	b.WriteString(fmt.Sprintf(" -X main.commit=%s", getGitSha()))
-	b.WriteString(fmt.Sprintf(" -X main.buildstamp=%d", buildStamp()))
-	return b.String()
-}
 
 func clean() {
 	rmr("dist")
 	rmr("tmp")
-	rmr(filepath.Join(os.Getenv("GOPATH"), fmt.Sprintf("pkg/%s_%s/github.com/alertmanager", goos, goarch)))
-}
-
-func setBuildEnv() {
-	os.Setenv("GOOS", goos)
-	if strings.HasPrefix(goarch, "armv") {
-		os.Setenv("GOARCH", "arm")
-		os.Setenv("GOARM", goarch[4:])
-	} else {
-		os.Setenv("GOARCH", goarch)
-	}
-	if goarch == "386" {
-		os.Setenv("GO386", "387")
-	}
-	if cgo != "" {
-		os.Setenv("CGO_ENABLED", cgo)
-	}
-	if gocc != "" {
-		os.Setenv("CC", gocc)
-	}
-	if gocxx != "" {
-		os.Setenv("CXX", gocxx)
-	}
-}
-
-func getGitSha() string {
-	v, err := runError("git", "describe", "--always", "--dirty")
-	if err != nil {
-		return "unknown-dev"
-	}
-	v = versionRe.ReplaceAllFunc(v, func(s []byte) []byte {
-		s[0] = '+'
-		return s
-	})
-	return string(v)
 }
 
 func buildStamp() int64 {
@@ -345,14 +251,6 @@ func buildStamp() int64 {
 	}
 	s, _ := strconv.ParseInt(string(bs), 10, 64)
 	return s
-}
-
-func buildArch() string {
-	os := goos
-	if os == "darwin" {
-		os = "macosx"
-	}
-	return fmt.Sprintf("%s-%s", os, goarch)
 }
 
 func run(cmd string, args ...string) []byte {

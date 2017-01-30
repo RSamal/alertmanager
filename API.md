@@ -328,8 +328,8 @@ DELETE /api/v1/silences/batch
 
 ### Add Silence in batch
 
-Call the Delete batch API
-Call create batch API with new updated data
+* ***Call the Delete batch API***
+* ***Call create batch API with new updated data***
 
 
 ## Alert API

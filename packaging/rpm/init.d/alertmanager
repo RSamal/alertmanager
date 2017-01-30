@@ -30,6 +30,7 @@ WORK_DIR=$ALRTMGR_HOME
 LOG_DIR=/var/log/alertmanager
 LOG_FILE=$LOG_DIR/alertmanager.log
 PID_FILE=/var/run/$NAME.pid
+LOCK_FILE=/var/lock/subsys/${NAME}
 DAEMON=/usr/sbin/$NAME
 
 if [ `id -u` -ne 0 ]; then
@@ -80,7 +81,7 @@ case "$1" in
 
     # Start Daemon
     cd $ALRTMGR_HOME
-    action $"Starting $DESC: ..." su -s /bin/sh -c "nohup ${DAEMON} >> ${LOG_FILE} 3>&1 &" $ALRTMGR_USER 2> /dev/null
+    daemonize -u ${ALRTMGR_USER} -p ${PID_FILE} -l ${LOCK_FILE} -a -e ${LOG_FILE} -o ${LOG_FILE} ${DAEMON} ${ARGS}
     return=$?
     if [ $return -eq 0 ]
     then

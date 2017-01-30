@@ -1,9 +1,10 @@
 /var/log/alertmanager/alertmanager.log {
-    weekly
-    rotate 10
-    copytruncate
-    delaycompress
-    compress
-    notifempty
-    missingok
+ sharedscripts
+  missingok
+  notifempty
+  rotate 30
+  compress
+  postrotate
+        [ ! -f /var/run/alertmanager/alertmanager.pid ] || /etc/init.d/alertmanager restart
+  endscript
 }
