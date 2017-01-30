@@ -439,6 +439,9 @@ func (s *Silences) Expire(id string) error {
 	if err != nil {
 		return err
 	}
+	if protoBefore(now, sil.StartsAt) {
+		sil.StartsAt = now
+	}
 	if sil, err = silenceSetTimeRange(sil, now, sil.StartsAt, now); err != nil {
 		return err
 	}

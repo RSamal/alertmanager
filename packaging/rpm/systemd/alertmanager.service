@@ -1,0 +1,19 @@
+[Unit]
+Description=Alrtmgr instance
+Documentation=
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+EnvironmentFile=/etc/sysconfig/alertmanager
+User=alrtmgr
+Group=alrtmgr
+Type=simple
+Restart=on-failure
+WorkingDirectory=/usr/share/alertmanager                           
+ExecStart=/bin/sh -c '/usr/sbin/alertmanager > /var/log/alertmanager/alertmanager.log 2>&1'   
+LimitNOFILE=10000
+TimeoutStopSec=20
+
+[Install]
+WantedBy=multi-user.target

@@ -124,6 +124,11 @@ func (api *API) Register(r *route.Router) {
 	r.Post("/silences", ihf("add_silence", api.addSilence))
 	r.Get("/silence/:sid", ihf("get_silence", api.getSilence))
 	r.Del("/silence/:sid", ihf("del_silence", api.delSilence))
+
+	// Wrapper for the batch processing of Silence and the handler code is present in wrapper.go
+	r.Post("/silences/batch", ihf("add_silence_batch", api.addSilenceBatch))
+	r.Del("/silences/batch", ihf("delete_silence_batch", api.delSilenceBatch))
+
 }
 
 // Update sets the configuration string to a new value.

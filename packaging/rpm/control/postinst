@@ -1,0 +1,68 @@
+#!/bin/sh
+
+set -e
+
+[ -f /etc/sysconfig/alertmanager ] && . /etc/sysconfig/alertmanager
+
+startAlertmanager() {
+  if [ -x /bin/systemctl ] ; then
+		/bin/systemctl start alertmanager.service
+	elif [ -x /etc/init.d/alertmanager ] ; then
+		/etc/init.d/alertmanager start
+	elif [ -x /etc/rc.d/init.d/alertmanager ] ; then
+		/etc/rc.d/init.d/alertmanager start
+	fi
+}
+stopAlertmanager() {
+	if [ -x /bin/systemctl ] ; then
+		/bin/systemctl stop alertmanager.service > /dev/null 2>&1 || :
+	elif [ -x /etc/init.d/alertmanager ] ; then
+		/etc/init.d/alertmanager stop
+	elif [ -x /etc/rc.d/init.d/alertmanager ] ; then
+		/etc/rc.d/init.d/alertmanager stop
+	fi
+}
+
+# Initial installation: $1 == 1
+# Upgrade: $1 == 2, and configured to restart on upgrade
+if [ $1 -eq 1 ] ; then
+	[ -z "$ALRTMGR_USER" ] && ALRTMGR_USER="alrtmgr"
+	[ -z "$ALRTMGR_GROUP" ] && ALRTMGR_GROUP="alrtmgr"
+	if ! getent group "$ALRTMGR_GROUP" > /dev/null 2>&1 ; then
+    groupadd -r "$ALRTMGR_GROUP"
+	fi
+	if ! getent passwd "$ALRTMGR_USER" > /dev/null 2>&1 ; then
+    useradd -r -g alrtmgr -d /usr/share/alrtmgr -s /sbin/nologin \
+    -c "alrtmgr user" alrtmgr
+	fi
+
+ 	# Set user permissions on /var/log/alertmanager, /var/lib/alertmanager
+	mkdir -p /var/log/alertmanager /var/lib/alertmanager
+	chown -R $ALRTMGR_USER:$ALRTMGR_GROUP /var/log/alertmanager /var/lib/alertmanager
+	chmod 755 /var/log/alertmanager /var/lib/alertmanager
+
+
+  if [ -x /bin/systemctl ] ; then
+    echo "### NOT starting on installation, please execute the following statements to configure alrtmgr to start automatically using systemd"
+    echo " sudo /bin/systemctl daemon-reload"
+    echo " sudo /bin/systemctl enable alertmanager.service"
+    echo "### You can start alertmanager by executing"
+    echo " sudo /bin/systemctl start alertmanager.service"
+  elif [ -x /sbin/chkconfig ] ; then
+    echo "### NOT starting alertmanager by default on bootup, please execute"
+    echo " sudo /sbin/chkconfig --add alertmanager"
+    echo "### In order to start alertmanager, execute"
+    echo " sudo service alertmanager start"
+  fi
+elif [ $1 -ge 2 ] ; then
+  if [ -x /opt/alrtmgr/ ]; then
+    echo "### Upgrading Notice ### "
+    echo "-- New alrtmgr install home is /usr/share/alrtmgr"
+    echo "-- Notice: service name && binary changed to alertmanager"
+  fi
+
+  if [ "$RESTART_ON_UPGRADE" == "true" ]; then
+    stopAlertmanager
+    startAlertmanager
+  fi
+fi

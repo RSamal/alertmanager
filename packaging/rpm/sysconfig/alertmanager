@@ -1,0 +1,6 @@
+ALRTMGR_USER=alrtmgr
+ALRTMGR_GROUP=alrtmgr
+ALRTMGR_HOME=/usr/share/alertmanager
+LOG_DIR=/var/log/alertmanager
+
+RESTART_ON_UPGRADE=false

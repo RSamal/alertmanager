@@ -2,6 +2,7 @@
 /alertmanager
 *.yml
 *.yaml
+*.gz
 /.build
 /.release
 /.tarballs

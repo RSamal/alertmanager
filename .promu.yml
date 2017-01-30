@@ -16,3 +16,6 @@ tarball:
         - doc/examples/simple.yml
         - LICENSE
         - NOTICE
+crossbuild:
+    platforms:
+        - linux/amd64
