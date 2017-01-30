@@ -92,6 +92,9 @@ func validData(hosts Hosts) error {
 		if !re.MatchString(host.IP) {
 			return fmt.Errorf("Invalid IP address %s", host.IP)
 		}
+		if host.ID != "" {
+			return fmt.Errorf("ID needs to be empty for new silencer %s:%s", host.Name, host.IP)
+		}
 	}
 	return nil
 }
