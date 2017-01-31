@@ -137,8 +137,7 @@ func (api *API) validDeleteData(hosts Hosts) error {
 	for _, host := range hosts {
 		sils, err := api.silences.Query(silence.QIDs(host.ID))
 		if err != nil || len(sils) == 0 {
-			fmt.Println(err)
-			return fmt.Errorf("%v %v", host.ID, err.Error())
+			return fmt.Errorf("%s not found", host.ID)
 
 		}
 	}

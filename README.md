@@ -15,35 +15,26 @@ There are various ways of installing Alertmanager.
 
 ### Precompiled binaries
 
-Precompiled binaries for released versions are available in the
-[*download* section](https://prometheus.io/download/)
-on [prometheus.io](https://prometheus.io). Using the latest production release binary
-is the recommended way of installing Alertmanager.
 
 ### Docker images
 
-Docker images are available on [Quay.io](https://quay.io/repository/prometheus/alertmanager).
 
 ### Compiling the binary
 
-You can either `go get` it:
-
-```
-$ GO15VENDOREXPERIMENT=1 go get github.com/prometheus/alertmanager/cmd/...
-# cd $GOPATH/src/github.com/prometheus/alertmanager
-$ alertmanager -config.file=<your_file>
-```
-
-Or checkout the source code and build manually:
+checkout the source code and build manually:
 
 ```
 $ mkdir -p $GOPATH/src/github.com/prometheus
 $ cd $GOPATH/src/github.com/prometheus
-$ git clone https://github.com/prometheus/alertmanager.git
+$ git clone git@github.ibm.com:cds-devops/alertmanager.git
 $ cd alertmanager
 $ make build
 $ ./alertmanager -config.file=<your_file>
 ```
+
+### API
+
+See [Alertmanager API] (API.md)
 
 ## Example
 

@@ -11,7 +11,7 @@ Group=alrtmgr
 Type=simple
 Restart=on-failure
 WorkingDirectory=/usr/share/alertmanager                           
-ExecStart=/bin/sh -c '/usr/sbin/alertmanager > /var/log/alertmanager/alertmanager.log 2>&1'   
+ExecStart=/bin/sh -c '/usr/sbin/alertmanager $ARGS > /var/log/alertmanager/alertmanager.log 2>&1'   
 LimitNOFILE=10000
 TimeoutStopSec=20
 

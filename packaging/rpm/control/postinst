@@ -36,11 +36,21 @@ if [ $1 -eq 1 ] ; then
     -c "alrtmgr user" alrtmgr
 	fi
 
+  # copy user config files
+  if [ ! -f $CONF_FILE ]; then
+    cp /usr/share/alertmanager/conf/alertmanager.yaml $CONF_FILE
+  fi
+
  	# Set user permissions on /var/log/alertmanager, /var/lib/alertmanager
 	mkdir -p /var/log/alertmanager /var/lib/alertmanager
 	chown -R $ALRTMGR_USER:$ALRTMGR_GROUP /var/log/alertmanager /var/lib/alertmanager
 	chmod 755 /var/log/alertmanager /var/lib/alertmanager
 
+  # configuration files should not be modifiable by alertmanager user, as this can be a security issue
+	chown -Rh root:$ALRTMGR_GROUP /etc/alertmanager/*
+	chmod 755 /etc/alertmanager
+	find /etc/alertmanager -type f -exec chmod 640 {} ';'
+	find /etc/alertmanager -type d -exec chmod 755 {} ';'
 
   if [ -x /bin/systemctl ] ; then
     echo "### NOT starting on installation, please execute the following statements to configure alrtmgr to start automatically using systemd"

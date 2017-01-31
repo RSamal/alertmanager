@@ -127,6 +127,7 @@ type linuxPackageOptions struct {
 	defaultFileSrc   string
 	systemdFileSrc   string
 	logrotateFileSrc string
+	configDirSrc     string
 	depends          []string
 }
 
@@ -147,6 +148,7 @@ func createRpmPackages() {
 		defaultFileSrc:   "packaging/rpm/sysconfig/alertmanager",
 		systemdFileSrc:   "packaging/rpm/systemd/alertmanager.service",
 		logrotateFileSrc: "packaging/rpm/log/alertmanager",
+		configDirSrc:     "packaging/rpm/conf",
 
 		depends: []string{"initscripts"},
 	})
@@ -173,6 +175,10 @@ func createPackage(options linuxPackageOptions) {
 	for _, binary := range binaries {
 		runPrint("cp", "-p", filepath.Join(workingDir, ".build/linux-amd64/"+binary), filepath.Join(packageRoot, "/usr/sbin/"+binary))
 	}
+
+	// copy conf files
+	runPrint("cp", "-r", options.configDirSrc, filepath.Join(packageRoot, options.homeDir))
+
 	// copy init.d script
 	runPrint("cp", "-p", options.initdScriptSrc, filepath.Join(packageRoot, options.initdScriptFilePath))
 	// copy environment var file
@@ -199,6 +205,7 @@ func createPackage(options linuxPackageOptions) {
 		"--after-install", options.postinstSrc,
 		"--name", "alertmanager",
 		"--version", linuxPackageVersion,
+		"--rpm-os", "linux",
 		"-p", "./dist",
 	}
 
