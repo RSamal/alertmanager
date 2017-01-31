@@ -326,8 +326,8 @@ DELETE /api/v1/silences/batch
 }
 ```
 
-### Delete Silence in batch
-
+### Update Silence in batch
+Please perform the below steps
 * ***Call the Delete batch API***
 * ***Call create batch API with new updated data***
 
