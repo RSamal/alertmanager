@@ -39,12 +39,13 @@ if [ $1 -eq 1 ] ; then
   # copy user config files
   if [ ! -f $CONF_FILE ]; then
     cp /usr/share/alertmanager/conf/alertmanager.yaml $CONF_FILE
+		cp /usr/share/alertmanager/conf/pagerduty.tmpl /etc/alertmanager/pagerduty.tmpl
   fi
 
  	# Set user permissions on /var/log/alertmanager, /var/lib/alertmanager
 	mkdir -p /var/log/alertmanager /var/lib/alertmanager
 	chown -R $ALRTMGR_USER:$ALRTMGR_GROUP /var/log/alertmanager /var/lib/alertmanager
-	chmod 755 /var/log/alertmanager /var/lib/alertmanager
+	chmod 755 /var/log/alertmanager /var/lib/alertmanager /etc/init.d/alertmanager
 
   # configuration files should not be modifiable by alertmanager user, as this can be a security issue
 	chown -Rh root:$ALRTMGR_GROUP /etc/alertmanager/*

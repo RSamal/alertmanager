@@ -82,6 +82,7 @@ case "$1" in
     touch "$PID_FILE" && chown "$ALRTMGR_USER":"$ALRTMGR_GROUP" "$PID_FILE"
 
     # Start Daemon
+    source /etc/init.d/functions
     cd $ALRTMGR_HOME
     daemonize -u ${ALRTMGR_USER} -p ${PID_FILE} -l ${LOCK_FILE} -a -e ${LOG_FILE} -o ${LOG_FILE} ${DAEMON} ${ARGS}
     return=$?

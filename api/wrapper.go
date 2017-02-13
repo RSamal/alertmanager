@@ -78,6 +78,7 @@ func (api *API) addSilenceBatch(w http.ResponseWriter, r *http.Request) {
 			typ: errorInternal,
 			err: err,
 		}, nil)
+		return
 	}
 
 	json.NewEncoder(w).Encode(reqs.Hosts)

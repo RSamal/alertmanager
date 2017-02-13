@@ -1,0 +1,40 @@
+
+{{ define "__subject" }}
+{{index .CommonLabels "alertid"}}:
+{{index .CommonAnnotations "severity"}}:
+{{index .CommonLabels "service"}}:
+{{index .CommonLabels "plan"}}:
+{{index .CommonLabels "region"}}:
+{{index .CommonLabels "env"}}:
+{{index .CommonLabels "host"}}:
+{{index .CommonLabels "ip"}}:
+{{index .CommonLabels "alertname"}}:
+({{index .CommonAnnotations "runbook"}})
+{{ end }}
+
+
+{{ define "__text_alert_list" }}{{ range . }}Name:
+{{index .Annotations "checkname"}}
+
+Description:
+{{index .Annotations "description"}}
+AlertId: {{index .Labels "alertid"}}
+RunbookURL: {{index .Annotations "runbook"}}
+
+Status:
+The following metric has changed from OK to CRITICAL state on {{ .StartsAt }}
+
+Target:
+{{index .Annotations "target"}}
+
+The current Value = {{index .Annotations "alertValue"}} (Thresholds: WARN = {{index .Annotations "alertWarn"}} / ERROR = {{index .Annotations "alertError"}})
+
+APS Operations Control Center:
+{{index .Annotations "cdsHealthUrl"}}
+
+Source: {{ .GeneratorURL }}
+{{ end }}{{ end }}
+
+
+{{ define "pagerduty.default.description" }}{{ template "__subject" . }}{{ end }}
+{{ define "pagerduty.default.instances" }}{{ template "__text_alert_list" . }}{{ end }}

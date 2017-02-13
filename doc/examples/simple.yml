@@ -3,11 +3,13 @@ global:
 
 # The directory from which notification templates are read.
 templates: 
-- '/Users/Ramakant/project/go/src/github.com/prometheus/alertmanager/test.tmpl'
+- '/Users/Ramakant/project/go/src/github.com/prometheus/alertmanager/doc/examples/pagerduty.tmpl'
 
 # The root route on which each incoming alert enters.
 route: 
   receiver: default-reciever
+  group_wait: 0s
+  group_interval: 0s
   repeat_interval: 1d
 
   # Service : Dash
@@ -16,24 +18,16 @@ route:
     match_re:
       service: ^(dash)$
     group_by: ['alertid', 'service', 'env','plan','region', 'hostname','ip']
-    group_wait: 0s
-    group_interval: 0s
+    
 
-# Alert Hierarchy
-inhibit_rules:
- - source_match:
-    alertid: 'DSH00001'
-   target_match:
-    alertid: 'DSH00016'
-   equal: ['service', 'hostname', 'ip']
-   
    
 receivers:
 
 - name: 'team-dash-pager'
   pagerduty_configs:
-  - service_key: 'fc70c95940e84a328a13aed6b2c5f864'
+  #- service_key: 'fc70c95940e84a328a13aed6b2c5f864'
+  - service_key: 'xxxxxxxx'
 
 - name: 'default-reciever'
   pagerduty_configs:
-  - service_key: 'xxxxxx'
+  - service_key: 'xxxxxxx'
