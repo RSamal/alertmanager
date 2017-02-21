@@ -5,12 +5,15 @@ node {
 	env.PATH =  "${goroot}/bin:${env.PATH}"
 	gopath = pwd()
 	env.GOPATH = gopath
+	env.PATH =  "${gopath}/bin:${env.PATH}"
 	workspace = gopath + "/src/github.com/prometheus/alertmanager"
 
 	dir(workspace) {
 		stage 'Checkout'	
 			   echo "checking out the code.."			
 	    	   checkout scm
+	    stage "Get Dependency"
+		       sh "make promu"
 		stage 'Test'
 			   sh 'make test'
 		stage 'Build'
