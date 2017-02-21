@@ -13,7 +13,7 @@ node {
 	    	   checkout scm
 		stage "Get Dependency"
 				echo "Get Promu tool..."
-				sh 'promu'	   
+				sh 'make promu'	   
 		stage 'Test'
 			   sh 'make test'
 		stage 'Build'
