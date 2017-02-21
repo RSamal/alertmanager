@@ -12,8 +12,6 @@ node {
 		stage 'Checkout'	
 			   echo "checking out the code.."			
 	    	   checkout scm
-	    stage "Get Dependency"
-		       sh "make promu"
 		stage 'Test'
 			   sh 'make test'
 		stage 'Build'
