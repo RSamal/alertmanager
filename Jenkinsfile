@@ -7,7 +7,7 @@ node {
 	gopath = pwd()
 	env.GOPATH = gopath
 	// if fpm tool is not avaliable then do "gem install fpm", and provide the binary path below
-	env.PATH =  "${gopath}/bin:${env.PATH}:/usr/local/rvm/gems/ruby-1.9.3-p551/bin"
+	env.PATH =  "${gopath}/bin:${env.PATH}:/usr/local/rvm/gems/ruby-1.9.3-p551/bin:/usr/local/rvm/rubies/ruby-1.9.3-p551/bin"
 	workspace = gopath + "/src/github.com/prometheus/alertmanager"
 
 	dir(workspace) {

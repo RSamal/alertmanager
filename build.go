@@ -189,7 +189,7 @@ func createPackage(options linuxPackageOptions) {
 	runPrint("cp", "-p", options.logrotateFileSrc, filepath.Join(packageRoot, options.logrotatePath))
 	// remove bin path
 	runPrint("rm", "-rf", filepath.Join(packageRoot, options.homeDir, "bin"))
-
+	println("Rinku ")
 	args := []string{
 		"-s", "dir",
 		"--description", "alertmanager",
