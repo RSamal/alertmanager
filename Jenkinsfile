@@ -13,7 +13,7 @@ node {
 			   echo "checking out the code.."			
 	    	   checkout scm
 		stage 'Test'
-			   sh 'make test'
+			   sh 'make all'
 		stage 'Build'
 				echo "Build  binary..."
 				sh 'promu crossbuild'
