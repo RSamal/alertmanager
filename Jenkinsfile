@@ -26,8 +26,9 @@ node {
 		stage 'Build'
 				echo "Build Linux binary..."
 				sh 'promu crossbuild'
-
+				
 				echo "Build RPM package..."
+				sh "rm -r ./dist"
 				sh "go run build.go pkg-rpm"
 		stage 'RPM Dist Copy'
 			  VERSION = sh( script: 'cat VERSION').trim()
