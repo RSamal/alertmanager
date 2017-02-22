@@ -1,11 +1,13 @@
 #!/usr/bin/env groovy
 node {
 	
+	// Make Sure GO tool installed on Jenkins Server and the fpm is avaliable in the server
 	def goroot = tool "Go"
 	env.PATH =  "${goroot}/bin:${env.PATH}"
 	gopath = pwd()
 	env.GOPATH = gopath
-	env.PATH =  "${gopath}/bin:${env.PATH}"
+	// if fpm tool is not avaliable then do "gem install fpm", and provide the binary path below
+	env.PATH =  "${gopath}/bin:${env.PATH}:/usr/local/rvm/gems/ruby-1.9.3-p551/bin"
 	workspace = gopath + "/src/github.com/prometheus/alertmanager"
 
 	dir(workspace) {
@@ -18,7 +20,6 @@ node {
 				echo "Build Linux binary..."
 				sh 'promu crossbuild'
 
-				env.PATH =  "/usr/local/bin:${env.PATH}"
 				echo "Build RPM package..."
 				sh 'go run build.go pkg-rpm'
 		
