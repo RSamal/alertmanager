@@ -20,16 +20,15 @@ node {
 		stage 'Checkout'	
 			   echo "checking out the code.."			
 	    	   checkout scm
-
+		stage 'Test'
+			   echo 'Testing....'
+			   sh 'make test'	   
 		stage 'Build'
-				sh 'gem env'
-				sh 'rvm info'
 				echo "Build Linux binary..."
 				sh 'promu crossbuild'
 
 				echo "Build RPM package..."
 				sh "go run build.go pkg-rpm"
-		
 		stage 'RPM Dist Copy'
 			  VERSION = readFile 'VERSION'
 			  step([$class: 'UCDeployPublisher',
@@ -40,7 +39,7 @@ node {
             	delivery: [
 					$class: 'com.urbancode.jenkins.plugins.ucdeploy.DeliveryHelper$Push',
 					pushVersion: '${VERSION}.${BUILD_NUMBER}',
-					baseDir: '\\var\\lib\\jenkins\\workspace\\go\\src\\github.com\\prometheus\\alertmanager\\dist',
+					baseDir:'\\var\\lib\\jenkins\\workspace\\alertmanager\\src\\github.com\\prometheus\\alertmanager\\dist',
 					
 					fileIncludePatterns: 'alertmanager-*.rpm',
 					fileExcludePatterns: '',
