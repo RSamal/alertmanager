@@ -13,9 +13,9 @@ node {
 			   echo "checking out the code.."			
 	    	   checkout scm
 		stage 'Test'
-			   sh 'make all'
+			   sh 'make test'
 		stage 'Build'
-				echo "Build  binary..."
+				echo "Build Linux binary..."
 				sh 'promu crossbuild'
 
 				env.PATH =  "/usr/local/bin:${env.PATH}"
