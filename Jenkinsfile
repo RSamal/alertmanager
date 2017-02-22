@@ -18,6 +18,7 @@ node {
 				echo "Build  binary..."
 				sh 'promu crossbuild'
 
+				env.PATH =  "/usr/local/bin:${env.PATH}"
 				echo "Build RPM package..."
 				sh 'go run build.go pkg-rpm'
 		
