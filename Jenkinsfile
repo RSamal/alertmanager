@@ -6,9 +6,11 @@ node {
 	env.PATH =  "${goroot}/bin:${env.PATH}"
 	gopath = pwd()
 	env.GOPATH = gopath
+	env.FPMPATH = "/usr/local/rvm/gems/ruby-1.9.3-p551/bin"
+	env.RUBY =    "/usr/local/rvm/rubies/ruby-1.9.3-p551/bin"
 	// if fpm tool is not avaliable then do "gem install fpm", and provide the binary path below
-	env.PATH =  "${gopath}/bin:${env.PATH}:/usr/local/rvm/gems/ruby-1.9.3-p551/bin"
-	env.PATH = "${env.PATH}:/usr/local/rvm/rubies/ruby-1.9.3-p551/bin"
+	
+	env.PATH = "${env.PATH}:${env.RUBY}:${env.FPMPATH}"
 	workspace = gopath + "/src/github.com/prometheus/alertmanager"
 
 	dir(workspace) {
