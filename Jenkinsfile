@@ -17,9 +17,10 @@ node {
 		stage 'Checkout'	
 			   echo "checking out the code.."			
 	    	   checkout scm
-		stage 'Test'
-			   sh 'make test'
+
 		stage 'Build'
+				sh 'gem env'
+				sh 'rvm info'
 				echo "Build Linux binary..."
 				sh 'promu crossbuild'
 
