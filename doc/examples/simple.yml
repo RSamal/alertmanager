@@ -14,20 +14,32 @@ route:
 
   # Service : Dash
   routes: 
-  - receiver: team-dash-pager
+  # Configuration for DashDb YP environment
+  - receiver: team-dash-yp-pager
     match_re:
       service: ^(dash)$
     group_by: ['alertid', 'service', 'env','plan','region', 'hostname','ip']
-    
+
+    #routes for YS machines
+    routes:
+    - receiver: team-dash-ys1-pager
+      match_re:
+          env: ys1
+      
 
    
 receivers:
-
-- name: 'team-dash-pager'
+# Mention pagerduty service_key as "NA" if the key comes from Seyren client
+#Pagerduty Service intigration for dashdb yp
+- name: 'team-dash-yp-pager'
   pagerduty_configs:
-  #- service_key: 'fc70c95940e84a328a13aed6b2c5f864'
-  - service_key: 'xxxxxxxx'
+  - service_key: 'NA'
+
+- name: 'team-dash-ys1-pager'
+  pagerduty_configs:
+  - service_key: '57cf723b4adc442fac90e69d8e27ceef'
+
 
 - name: 'default-reciever'
   pagerduty_configs:
-  - service_key: 'xxxxxxx'
+  - service_key: 'NA'

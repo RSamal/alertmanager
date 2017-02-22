@@ -407,12 +407,11 @@ func (n *PagerDuty) Notify(ctx context.Context, as ...*types.Alert) (bool, error
 		details[k] = tmpl(v)
 	}
 
-	// Give Always preference to the service key setup by client(Seyren)
-	var serviceKey string
-	if data.CommonAnnotations["servicekey"] != "" {
+	// Give Always preference to the service key setup by client(Seyren). So Provide Pagerduty Service key as NA
+	// if you want to use the seyren provided service key
+	var serviceKey = tmpl(string(n.conf.ServiceKey))
+	if serviceKey == "NA" {
 		serviceKey = data.CommonAnnotations["servicekey"]
-	} else {
-		serviceKey = tmpl(string(n.conf.ServiceKey))
 	}
 
 	msg := &pagerDutyMessage{
