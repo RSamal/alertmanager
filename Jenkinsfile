@@ -24,7 +24,7 @@ node {
 				sh 'promu crossbuild'
 
 				echo "Build RPM package..."
-				sh "scripts/package.sh"
+				sh "go run build.go pkg-rpm"
 		
 		stage 'RPM Dist Copy'
 			  VERSION = readFile 'VERSION'
