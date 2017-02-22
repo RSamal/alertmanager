@@ -24,7 +24,7 @@ node {
 				sh 'promu crossbuild'
 
 				echo "Build RPM package..."
-				sh "scripts/package.sh"
+				sh " sudo scripts/package.sh"
 		
 		stage 'RPM Dist Copy'
 			  VERSION = readFile 'VERSION'
