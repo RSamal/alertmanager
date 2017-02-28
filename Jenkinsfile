@@ -31,7 +31,7 @@ node {
 				sh "rm -r ./dist"
 				sh "go run build.go pkg-rpm"
 		stage 'RPM Dist Copy'
-			  VERSION = sh( script: 'cat VERSION').trim()
+			  VERSION = readFile('VERSION').trim()
 			  step([$class: 'UCDeployPublisher',
         		siteName: 'IBM UCD',
         		component: [

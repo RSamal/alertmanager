@@ -1,0 +1,34 @@
+global:
+  resolve_timeout: 5w
+
+# The directory from which notification templates are read.
+templates: 
+- '/etc/alertmanager/pagerduty.tmpl'
+
+# The root route on which each incoming alert enters.
+route: 
+  receiver: default-reciever
+  group_wait: 0s
+  group_interval: 0s
+  repeat_interval: 1d
+
+  # Service : Dash
+  routes: 
+  # Configuration for DashDb YP environment
+  - receiver: team-dash-yp-pager
+    match_re:
+      service: ^(dash)$
+    group_by: ['alertid', 'service', 'env','plan','region', 'hostname','ip']
+
+   
+receivers:
+# Mention pagerduty service_key as "NA" if the key comes from Seyren client
+#Pagerduty Service intigration for dashdb yp
+- name: 'team-dash-yp-pager'
+  pagerduty_configs:
+  - service_key: 'NA'
+
+
+- name: 'default-reciever'
+  pagerduty_configs:
+  - service_key: 'fc70c95940e84a328a13aed6b2c5f864'
